@@ -1,0 +1,22 @@
+import { useMemo, useState } from "react";
+import { QrCode, Plus, Minus, ShoppingBag, CheckCircle2, Utensils } from "lucide-react";
+
+const MENU = [
+  {id:"m1",name:"Masala Dosa",category:"South Indian",price:100,veg:true},{id:"m2",name:"Idli Sambar",category:"South Indian",price:70,veg:true},
+  {id:"m3",name:"Paneer Tikka",category:"Starters",price:220,veg:true},{id:"m4",name:"Veg Manchurian",category:"Starters",price:180,veg:true},
+  {id:"m5",name:"Veg Thali",category:"Main Course",price:180,veg:true},{id:"m6",name:"Paneer Butter Masala",category:"Main Course",price:240,veg:true},
+  {id:"m7",name:"Jeera Rice",category:"Main Course",price:130,veg:true},{id:"m8",name:"Cold Coffee",category:"Beverages",price:120,veg:true},
+  {id:"m9",name:"Masala Chai",category:"Beverages",price:20,veg:true},{id:"m10",name:"Gulab Jamun",category:"Desserts",price:60,veg:true}
+];
+const money = n => new Intl.NumberFormat("en-IN",{style:"currency",currency:"INR",maximumFractionDigits:0}).format(n);
+export default function CustomerOrder(){
+ const params=new URLSearchParams(window.location.search); const table=Number(params.get("table"));
+ const [name,setName]=useState(""); const [cart,setCart]=useState({}); const [busy,setBusy]=useState(false); const [sent,setSent]=useState(false); const [error,setError]=useState(""); const [category,setCategory]=useState("All");
+ const categories=["All",...new Set(MENU.map(x=>x.category))]; const filtered=useMemo(()=>MENU.filter(x=>category==="All"||x.category===category),[category]);
+ const total=MENU.reduce((s,x)=>s+x.price*(cart[x.id]||0),0); const count=Object.values(cart).reduce((a,b)=>a+b,0);
+ const change=(id,d)=>setCart(old=>({...old,[id]:Math.max(0,(old[id]||0)+d)}));
+ async function submit(){setError("");if(!name.trim()){setError("Please enter your name.");return;}if(!count){setError("Please add at least one item.");return;}setBusy(true);try{const r=await fetch("/api/qr-orders",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({table,customerName:name.trim(),items:MENU.filter(x=>cart[x.id]>0).map(x=>({id:x.id,qty:cart[x.id]}))})});const result=await r.json();if(!r.ok)throw new Error(result.error||"Could not submit order");setSent(true);}catch(e){setError(`${e.message}. Make sure you are connected to the restaurant Wi-Fi and the billing server is running.`);}finally{setBusy(false)}}
+ if(!Number.isInteger(table)||table<1||table>16)return <div className="qr-page"><div className="qr-card"><QrCode size={34}/><h1>Invalid table QR</h1><p>Please scan the QR code provided for your table.</p></div></div>;
+ if(sent)return <div className="qr-page"><div className="qr-card success-card"><CheckCircle2 size={48}/><h1>Order sent!</h1><p>Your order for <b>Table {table}</b> has been sent to the restaurant.</p><p className="muted">Please wait for staff confirmation. This demo does not send an automatic payment.</p></div></div>;
+ return <div className="qr-page"><div className="qr-header"><div className="qr-brand"><Utensils size={20}/><span>TableMint</span></div><span className="table-pill">Table {table}</span></div><div className="qr-intro"><div className="eyebrow">DIGITAL MENU</div><h1>What would you like?</h1><p>Choose your items and send your order to the kitchen.</p></div><label className="customer-name">Your name<input value={name} onChange={e=>setName(e.target.value)} placeholder="Enter your name" maxLength={60}/></label><div className="category-strip">{categories.map(c=><button key={c} className={category===c?"selected":""} onClick={()=>setCategory(c)}>{c}</button>)}</div><div className="qr-menu">{filtered.map(item=><article className="qr-menu-item" key={item.id}><div className="veg-mark"/><div className="qr-menu-info"><b>{item.name}</b><span>{item.category}</span><strong>{money(item.price)}</strong></div><div className="qr-qty"><button onClick={()=>change(item.id,-1)} disabled={!cart[item.id]} aria-label="Remove one"><Minus size={15}/></button><b>{cart[item.id]||0}</b><button onClick={()=>change(item.id,1)} aria-label="Add one"><Plus size={15}/></button></div></article>)}</div><div className="qr-checkout"><div><span>{count} item{count===1?"":"s"}</span><strong>{money(total)}</strong></div>{error&&<p className="qr-error">{error}</p>}<button className="qr-submit" onClick={submit} disabled={busy||!count}><ShoppingBag size={17}/>{busy?"Sending order…":"Send order"}</button><small>Payment is handled with restaurant staff.</small></div></div>
+}

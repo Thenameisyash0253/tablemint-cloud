@@ -1,0 +1,112 @@
+{
+  "tables": [
+    {
+      "id": 1,
+      "guests": [],
+      "openedAt": null
+    },
+    {
+      "id": 2,
+      "guests": [],
+      "openedAt": null
+    },
+    {
+      "id": 3,
+      "guests": [],
+      "openedAt": null
+    },
+    {
+      "id": 4,
+      "guests": [],
+      "openedAt": null
+    },
+    {
+      "id": 5,
+      "guests": [],
+      "openedAt": null
+    },
+    {
+      "id": 6,
+      "guests": [],
+      "openedAt": null
+    },
+    {
+      "id": 7,
+      "guests": [],
+      "openedAt": null
+    },
+    {
+      "id": 8,
+      "guests": [],
+      "openedAt": null
+    },
+    {
+      "id": 9,
+      "guests": [],
+      "openedAt": null
+    },
+    {
+      "id": 10,
+      "guests": [],
+      "openedAt": null
+    },
+    {
+      "id": 11,
+      "guests": [],
+      "openedAt": null
+    },
+    {
+      "id": 12,
+      "guests": [],
+      "openedAt": null
+    },
+    {
+      "id": 13,
+      "guests": [
+        {
+          "id": "qr-1793275786329-40428",
+          "name": "Yash",
+          "items": [
+            {
+              "id": "m2",
+              "name": "Idli Sambar",
+              "category": "South Indian",
+              "price": 70,
+              "qty": 1
+            },
+            {
+              "id": "m3",
+              "name": "Paneer Tikka",
+              "category": "Starters",
+              "price": 220,
+              "qty": 1
+            }
+          ],
+          "status": "Open",
+          "createdAt": "2026-10-29T12:09:46.329Z",
+          "paid": false,
+          "paymentMethod": null,
+          "source": "QR mobile order"
+        }
+      ],
+      "openedAt": "2026-10-29T12:09:46.329Z"
+    },
+    {
+      "id": 14,
+      "guests": [],
+      "openedAt": null
+    },
+    {
+      "id": 15,
+      "guests": [],
+      "openedAt": null
+    },
+    {
+      "id": 16,
+      "guests": [],
+      "openedAt": null
+    }
+  ],
+  "parcelOrders": [],
+  "nextParcel": 1
+}
